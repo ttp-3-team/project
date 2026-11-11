@@ -12,7 +12,7 @@
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
     "core:dev": "dotnet run --project services/ArchLens.Core",
-    "core:test": "dotnet test ArchLens.sln"
+    "core:test": "dotnet test ArchLens.slnx"
   },
   "pnpm": {
     "overrides": {

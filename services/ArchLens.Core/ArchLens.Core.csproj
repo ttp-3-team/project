@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArchLens.Domain\ArchLens.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
