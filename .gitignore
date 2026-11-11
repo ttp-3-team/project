@@ -1,0 +1,25 @@
+# deps / build
+node_modules/
+dist/
+.output/
+.vinxi/
+.tanstack/
+.nitro/
+bin/
+obj/
+*.tsbuildinfo
+coverage/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# artifacts (test reports, screenshots)
+artifacts/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.user
