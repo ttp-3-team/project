@@ -1,0 +1,688 @@
+{
+  "schemaVersion": 1,
+  "elements": [
+    {
+      "id": "apiGateway",
+      "kind": "container",
+      "name": "API Gateway",
+      "description": "Single entry point for all clients.",
+      "technology": "Node.js / Express",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "cache",
+      "kind": "container",
+      "name": "Session Cache",
+      "description": "Caches sessions and rate-limit counters.",
+      "technology": "Redis",
+      "tags": [
+        "Cache",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "catalogDb",
+      "kind": "container",
+      "name": "Catalog Database",
+      "description": "Products.",
+      "technology": "MongoDB",
+      "tags": [
+        "Database",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "catalogService",
+      "kind": "container",
+      "name": "Catalog Service",
+      "description": "Product data and search.",
+      "technology": "Go",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "customer",
+      "kind": "person",
+      "name": "Customer",
+      "description": "Buys products online.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": false
+    },
+    {
+      "id": "emailProvider",
+      "kind": "softwareSystem",
+      "name": "Email Provider",
+      "description": "Delivers transactional email.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": true
+    },
+    {
+      "id": "emailSender",
+      "kind": "component",
+      "name": "Email Sender",
+      "description": "Hands messages to the email provider.",
+      "technology": "HTTP client",
+      "tags": [],
+      "parentId": "notificationService",
+      "external": false
+    },
+    {
+      "id": "eventListener",
+      "kind": "component",
+      "name": "Event Listener",
+      "description": "Consumes domain events.",
+      "technology": "amqplib",
+      "tags": [],
+      "parentId": "notificationService",
+      "external": false
+    },
+    {
+      "id": "fraudChecker",
+      "kind": "component",
+      "name": "Fraud Checker",
+      "description": "Rule-based fraud screening.",
+      "technology": "Spring Bean",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "messageBus",
+      "kind": "container",
+      "name": "Message Bus",
+      "description": "Asynchronous domain events.",
+      "technology": "RabbitMQ",
+      "tags": [
+        "Queue",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "mobileApp",
+      "kind": "container",
+      "name": "Mobile Storefront",
+      "description": "Storefront for phones. Runs on customer devices, so it is not part of any server deployment.",
+      "technology": "Kotlin Multiplatform",
+      "tags": [
+        "Mobile"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "notificationService",
+      "kind": "container",
+      "name": "Notification Service",
+      "description": "Sends customer notifications.",
+      "technology": "Node.js",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "orderController",
+      "kind": "component",
+      "name": "Order Controller",
+      "description": "REST endpoints for orders.",
+      "technology": "Spring MVC",
+      "tags": [],
+      "parentId": "orderService",
+      "external": false
+    },
+    {
+      "id": "orderDb",
+      "kind": "container",
+      "name": "Order Database",
+      "description": "Orders.",
+      "technology": "PostgreSQL",
+      "tags": [
+        "Database",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "orderEventPublisher",
+      "kind": "component",
+      "name": "Order Event Publisher",
+      "description": "Publishes order events.",
+      "technology": "Spring AMQP",
+      "tags": [],
+      "parentId": "orderService",
+      "external": false
+    },
+    {
+      "id": "orderFacade",
+      "kind": "component",
+      "name": "Order Facade",
+      "description": "Order use cases.",
+      "technology": "Spring Bean",
+      "tags": [],
+      "parentId": "orderService",
+      "external": false
+    },
+    {
+      "id": "orderRepository",
+      "kind": "component",
+      "name": "Order Repository",
+      "description": "Persists orders.",
+      "technology": "Spring Data JPA",
+      "tags": [],
+      "parentId": "orderService",
+      "external": false
+    },
+    {
+      "id": "orderService",
+      "kind": "container",
+      "name": "Order Service",
+      "description": "Order lifecycle.",
+      "technology": "Java / Spring Boot",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "paymentController",
+      "kind": "component",
+      "name": "Payment Controller",
+      "description": "REST endpoints for payments.",
+      "technology": "Spring MVC",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "paymentDb",
+      "kind": "container",
+      "name": "Payment Database",
+      "description": "Payments.",
+      "technology": "PostgreSQL",
+      "tags": [
+        "Database",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "paymentEventConsumer",
+      "kind": "component",
+      "name": "Payment Event Consumer",
+      "description": "Reacts to order events.",
+      "technology": "Spring AMQP",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "paymentProcessor",
+      "kind": "component",
+      "name": "Payment Processor",
+      "description": "Payment use cases.",
+      "technology": "Spring Bean",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "paymentRepository",
+      "kind": "component",
+      "name": "Payment Repository",
+      "description": "Persists payments.",
+      "technology": "Spring Data JPA",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "paymentService",
+      "kind": "container",
+      "name": "Payment Service",
+      "description": "Payment authorisation and capture.",
+      "technology": "Java / Spring Boot",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    },
+    {
+      "id": "pricingClient",
+      "kind": "component",
+      "name": "Pricing Client",
+      "description": "Fetches current prices.",
+      "technology": "HTTP client",
+      "tags": [],
+      "parentId": "orderService",
+      "external": false
+    },
+    {
+      "id": "psp",
+      "kind": "softwareSystem",
+      "name": "Payment Provider",
+      "description": "Processes card payments.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": true
+    },
+    {
+      "id": "pspAdapter",
+      "kind": "component",
+      "name": "PSP Adapter",
+      "description": "Talks to the payment provider.",
+      "technology": "HTTP client",
+      "tags": [],
+      "parentId": "paymentService",
+      "external": false
+    },
+    {
+      "id": "shop",
+      "kind": "softwareSystem",
+      "name": "ShopFlow",
+      "description": "Online shop platform.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": false
+    },
+    {
+      "id": "templateRenderer",
+      "kind": "component",
+      "name": "Template Renderer",
+      "description": "Renders message templates.",
+      "technology": "Handlebars",
+      "tags": [],
+      "parentId": "notificationService",
+      "external": false
+    },
+    {
+      "id": "webApp",
+      "kind": "container",
+      "name": "Web Application",
+      "description": "Storefront for browsers.",
+      "technology": "React",
+      "tags": [
+        "Browser",
+        "deployed"
+      ],
+      "parentId": "shop",
+      "external": false
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r-apiGateway-cache",
+      "sourceId": "apiGateway",
+      "targetId": "cache",
+      "description": "Caches sessions in",
+      "technology": "RESP"
+    },
+    {
+      "id": "r-apiGateway-catalogService",
+      "sourceId": "apiGateway",
+      "targetId": "catalogService",
+      "description": "Routes catalog requests to",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-apiGateway-orderController",
+      "sourceId": "apiGateway",
+      "targetId": "orderController",
+      "description": "Routes order requests to",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-apiGateway-orderService",
+      "sourceId": "apiGateway",
+      "targetId": "orderService",
+      "description": "Routes order requests to",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-apiGateway-paymentService",
+      "sourceId": "apiGateway",
+      "targetId": "paymentService",
+      "description": "Routes payment requests to",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-catalogService-catalogDb",
+      "sourceId": "catalogService",
+      "targetId": "catalogDb",
+      "description": "Reads and writes",
+      "technology": "MongoDB wire"
+    },
+    {
+      "id": "r-customer-mobileApp",
+      "sourceId": "customer",
+      "targetId": "mobileApp",
+      "description": "Browses and orders using",
+      "technology": ""
+    },
+    {
+      "id": "r-customer-webApp",
+      "sourceId": "customer",
+      "targetId": "webApp",
+      "description": "Browses and orders using",
+      "technology": ""
+    },
+    {
+      "id": "r-emailSender-emailProvider",
+      "sourceId": "emailSender",
+      "targetId": "emailProvider",
+      "description": "Sends email through",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-eventListener-templateRenderer",
+      "sourceId": "eventListener",
+      "targetId": "templateRenderer",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-messageBus-eventListener",
+      "sourceId": "messageBus",
+      "targetId": "eventListener",
+      "description": "Delivers events to",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-messageBus-paymentEventConsumer",
+      "sourceId": "messageBus",
+      "targetId": "paymentEventConsumer",
+      "description": "Delivers order events to",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-mobileApp-apiGateway",
+      "sourceId": "mobileApp",
+      "targetId": "apiGateway",
+      "description": "Calls",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-notificationService-emailProvider",
+      "sourceId": "notificationService",
+      "targetId": "emailProvider",
+      "description": "Sends email through",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-notificationService-messageBus",
+      "sourceId": "notificationService",
+      "targetId": "messageBus",
+      "description": "Consumes events from",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-orderController-orderFacade",
+      "sourceId": "orderController",
+      "targetId": "orderFacade",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-orderEventPublisher-messageBus",
+      "sourceId": "orderEventPublisher",
+      "targetId": "messageBus",
+      "description": "Publishes order events to",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-orderFacade-orderEventPublisher",
+      "sourceId": "orderFacade",
+      "targetId": "orderEventPublisher",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-orderFacade-orderRepository",
+      "sourceId": "orderFacade",
+      "targetId": "orderRepository",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-orderFacade-paymentController",
+      "sourceId": "orderFacade",
+      "targetId": "paymentController",
+      "description": "Requests payment from",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-orderFacade-pricingClient",
+      "sourceId": "orderFacade",
+      "targetId": "pricingClient",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-orderRepository-orderDb",
+      "sourceId": "orderRepository",
+      "targetId": "orderDb",
+      "description": "Reads and writes",
+      "technology": "JDBC"
+    },
+    {
+      "id": "r-orderService-catalogService",
+      "sourceId": "orderService",
+      "targetId": "catalogService",
+      "description": "Fetches prices from",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-orderService-messageBus",
+      "sourceId": "orderService",
+      "targetId": "messageBus",
+      "description": "Publishes order events to",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-orderService-orderDb",
+      "sourceId": "orderService",
+      "targetId": "orderDb",
+      "description": "Reads and writes",
+      "technology": "JDBC"
+    },
+    {
+      "id": "r-orderService-paymentService",
+      "sourceId": "orderService",
+      "targetId": "paymentService",
+      "description": "Requests payment from",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-paymentController-paymentProcessor",
+      "sourceId": "paymentController",
+      "targetId": "paymentProcessor",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-paymentEventConsumer-paymentProcessor",
+      "sourceId": "paymentEventConsumer",
+      "targetId": "paymentProcessor",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-paymentProcessor-fraudChecker",
+      "sourceId": "paymentProcessor",
+      "targetId": "fraudChecker",
+      "description": "Screens payments with",
+      "technology": ""
+    },
+    {
+      "id": "r-paymentProcessor-paymentRepository",
+      "sourceId": "paymentProcessor",
+      "targetId": "paymentRepository",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-paymentProcessor-pspAdapter",
+      "sourceId": "paymentProcessor",
+      "targetId": "pspAdapter",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-paymentRepository-paymentDb",
+      "sourceId": "paymentRepository",
+      "targetId": "paymentDb",
+      "description": "Reads and writes",
+      "technology": "JDBC"
+    },
+    {
+      "id": "r-paymentService-messageBus",
+      "sourceId": "paymentService",
+      "targetId": "messageBus",
+      "description": "Publishes payment events to",
+      "technology": "AMQP"
+    },
+    {
+      "id": "r-paymentService-paymentDb",
+      "sourceId": "paymentService",
+      "targetId": "paymentDb",
+      "description": "Reads and writes",
+      "technology": "JDBC"
+    },
+    {
+      "id": "r-paymentService-psp",
+      "sourceId": "paymentService",
+      "targetId": "psp",
+      "description": "Authorises and captures payments with",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-pricingClient-catalogService",
+      "sourceId": "pricingClient",
+      "targetId": "catalogService",
+      "description": "Fetches prices from",
+      "technology": "gRPC"
+    },
+    {
+      "id": "r-pspAdapter-psp",
+      "sourceId": "pspAdapter",
+      "targetId": "psp",
+      "description": "Authorises and captures payments with",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-templateRenderer-emailSender",
+      "sourceId": "templateRenderer",
+      "targetId": "emailSender",
+      "description": "Uses",
+      "technology": ""
+    },
+    {
+      "id": "r-webApp-apiGateway",
+      "sourceId": "webApp",
+      "targetId": "apiGateway",
+      "description": "Calls",
+      "technology": "HTTPS/JSON"
+    }
+  ],
+  "layout": {
+    "context": {
+      "customer": {
+        "x": 0,
+        "y": 200
+      },
+      "shop": {
+        "x": 380,
+        "y": 200
+      },
+      "emailProvider": {
+        "x": 760,
+        "y": 60
+      },
+      "psp": {
+        "x": 760,
+        "y": 340
+      }
+    },
+    "container:shop": {
+      "customer": {
+        "x": 0,
+        "y": 360
+      },
+      "webApp": {
+        "x": 320,
+        "y": 260
+      },
+      "mobileApp": {
+        "x": 320,
+        "y": 460
+      },
+      "apiGateway": {
+        "x": 640,
+        "y": 360
+      },
+      "catalogService": {
+        "x": 960,
+        "y": 100
+      },
+      "orderService": {
+        "x": 960,
+        "y": 360
+      },
+      "paymentService": {
+        "x": 960,
+        "y": 620
+      },
+      "catalogDb": {
+        "x": 1280,
+        "y": 0
+      },
+      "orderDb": {
+        "x": 1280,
+        "y": 300
+      },
+      "messageBus": {
+        "x": 1280,
+        "y": 480
+      },
+      "paymentDb": {
+        "x": 1280,
+        "y": 760
+      },
+      "notificationService": {
+        "x": 1600,
+        "y": 380
+      },
+      "emailProvider": {
+        "x": 1920,
+        "y": 380
+      },
+      "psp": {
+        "x": 1600,
+        "y": 760
+      }
+    }
+  }
+}
