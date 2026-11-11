@@ -1,0 +1,22 @@
+{
+  "name": "archlens",
+  "private": true,
+  "packageManager": "pnpm@10.23.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm -C apps/web dev",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "core:dev": "dotnet run --project services/ArchLens.Core",
+    "core:test": "dotnet test ArchLens.sln"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "6.0.2"
+    }
+  }
+}

@@ -13,3 +13,8 @@ indent_size = 4
 
 [*.md]
 trim_trailing_whitespace = false
+[*.{received,verified}.*]
+charset = utf-8-bom
+end_of_line = lf
+insert_final_newline = false
+trim_trailing_whitespace = false

@@ -1,5 +1,5 @@
-# deps / build
 node_modules/
+.pnpm-store/
 dist/
 .output/
 .vinxi/
@@ -10,16 +10,15 @@ obj/
 *.tsbuildinfo
 coverage/
 
-# env
 .env
 .env.local
 .env.*.local
 
-# artifacts (test reports, screenshots)
 artifacts/
 
-# IDE / OS
 .idea/
 .vscode/
 .DS_Store
 *.user
+
+*.received.*
