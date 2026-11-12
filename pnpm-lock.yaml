@@ -10,3 +10,5 @@ overrides:
 importers:
 
   .: {}
+
+  packages/contracts: {}

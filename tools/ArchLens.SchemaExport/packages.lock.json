@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "ErrorOr": {
+        "type": "Transitive",
+        "resolved": "2.1.1",
+        "contentHash": "Y/AhvEZ5DjSi993Db1VrnYpK8YpM4o+tonF4f+AtXDzrIHYvbjWJD7fpip+ugSwW8kMw+XXEnMlJM7E0BKJBWA=="
+      },
+      "archlens.domain": {
+        "type": "Project",
+        "dependencies": {
+          "ErrorOr": "[2.1.1, )"
+        }
+      }
+    }
+  }
+}

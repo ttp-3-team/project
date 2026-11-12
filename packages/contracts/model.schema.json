@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archlens.dev/schemas/model.schema.json",
+  "title": "ModelSnapshot",
+  "description": "An immutable snapshot of a C4 model. Generated from ArchLens.Domain; do not edit by hand.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "integer"
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "kind": {
+            "enum": [
+              "person",
+              "softwareSystem",
+              "container",
+              "component"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "properties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "name"
+        ]
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sourceId",
+          "targetId"
+        ]
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "elements",
+    "relationships",
+    "layout"
+  ]
+}

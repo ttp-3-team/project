@@ -1,0 +1,14 @@
+{
+  "name": "@archlens/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generated artifacts only: the model JSON Schema exported from ArchLens.Domain. Do not edit by hand.",
+  "exports": {
+    "./model.schema.json": "./model.schema.json"
+  },
+  "scripts": {
+    "gen": "pnpm gen:schema",
+    "gen:schema": "dotnet run --project ../../tools/ArchLens.SchemaExport -- model.schema.json"
+  }
+}
