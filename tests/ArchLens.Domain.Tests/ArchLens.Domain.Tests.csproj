@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Verify.Xunit" Version="31.12.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\services\ArchLens.Domain\ArchLens.Domain.csproj" />
   </ItemGroup>
 
