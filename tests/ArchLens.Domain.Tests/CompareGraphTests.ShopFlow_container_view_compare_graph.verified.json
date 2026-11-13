@@ -1,0 +1,564 @@
+﻿{
+  "view": {
+    "key": "container:shop",
+    "kind": "container",
+    "title": "Containers: ShopFlow",
+    "label": "ShopFlow",
+    "scopeId": "shop",
+    "ancestors": [
+      {
+        "key": "context",
+        "title": "System context",
+        "label": "Context"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "elementId": "apiGateway",
+      "name": "API Gateway",
+      "kind": "container",
+      "technology": "Node.js / Express",
+      "description": "Single entry point for all clients.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:apiGateway",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 640,
+        "y": 360
+      }
+    },
+    {
+      "elementId": "cache",
+      "name": "Session Cache",
+      "kind": "container",
+      "technology": "Redis",
+      "description": "Caches sessions and rate-limit counters.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:cache",
+      "hasChildren": false,
+      "status": "added",
+      "changes": [],
+      "position": null
+    },
+    {
+      "elementId": "catalogDb",
+      "name": "Catalog Database",
+      "kind": "container",
+      "technology": "MongoDB",
+      "description": "Products.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:catalogDb",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1280,
+        "y": 0
+      }
+    },
+    {
+      "elementId": "catalogService",
+      "name": "Catalog Service",
+      "kind": "container",
+      "technology": "Go",
+      "description": "Product data and search.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:catalogService",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 960,
+        "y": 100
+      }
+    },
+    {
+      "elementId": "customer",
+      "name": "Customer",
+      "kind": "person",
+      "technology": "",
+      "description": "Buys products online.",
+      "external": false,
+      "outside": true,
+      "childViewKey": null,
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 0,
+        "y": 360
+      }
+    },
+    {
+      "elementId": "emailProvider",
+      "name": "Email Provider",
+      "kind": "softwareSystem",
+      "technology": "",
+      "description": "Delivers transactional email.",
+      "external": true,
+      "outside": true,
+      "childViewKey": null,
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1920,
+        "y": 380
+      }
+    },
+    {
+      "elementId": "messageBus",
+      "name": "Message Bus",
+      "kind": "container",
+      "technology": "RabbitMQ",
+      "description": "Asynchronous domain events.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:messageBus",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1280,
+        "y": 480
+      }
+    },
+    {
+      "elementId": "mobileApp",
+      "name": "Mobile Storefront",
+      "kind": "container",
+      "technology": "Kotlin Multiplatform",
+      "description": "Storefront for phones. Runs on customer devices, so it is not part of any server deployment.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:mobileApp",
+      "hasChildren": false,
+      "status": "modified",
+      "changes": [
+        {
+          "field": "name",
+          "from": "Mobile App",
+          "to": "Mobile Storefront"
+        },
+        {
+          "field": "technology",
+          "from": "Kotlin / Android",
+          "to": "Kotlin Multiplatform"
+        }
+      ],
+      "position": {
+        "x": 320,
+        "y": 460
+      }
+    },
+    {
+      "elementId": "notificationService",
+      "name": "Notification Service",
+      "kind": "container",
+      "technology": "Node.js",
+      "description": "Sends customer notifications.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:notificationService",
+      "hasChildren": true,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1600,
+        "y": 380
+      }
+    },
+    {
+      "elementId": "orderDb",
+      "name": "Order Database",
+      "kind": "container",
+      "technology": "PostgreSQL",
+      "description": "Orders.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:orderDb",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1280,
+        "y": 300
+      }
+    },
+    {
+      "elementId": "orderService",
+      "name": "Order Service",
+      "kind": "container",
+      "technology": "Java / Spring Boot",
+      "description": "Order lifecycle.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:orderService",
+      "hasChildren": true,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 960,
+        "y": 360
+      }
+    },
+    {
+      "elementId": "paymentDb",
+      "name": "Payment Database",
+      "kind": "container",
+      "technology": "PostgreSQL",
+      "description": "Payments.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:paymentDb",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1280,
+        "y": 760
+      }
+    },
+    {
+      "elementId": "paymentService",
+      "name": "Payment Service",
+      "kind": "container",
+      "technology": "Java / Spring Boot",
+      "description": "Payment authorisation and capture.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:paymentService",
+      "hasChildren": true,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 960,
+        "y": 620
+      }
+    },
+    {
+      "elementId": "psp",
+      "name": "Payment Provider",
+      "kind": "softwareSystem",
+      "technology": "",
+      "description": "Processes card payments.",
+      "external": true,
+      "outside": true,
+      "childViewKey": null,
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 1600,
+        "y": 760
+      }
+    },
+    {
+      "elementId": "webApp",
+      "name": "Web Application",
+      "kind": "container",
+      "technology": "React",
+      "description": "Storefront for browsers.",
+      "external": false,
+      "outside": false,
+      "childViewKey": "component:webApp",
+      "hasChildren": false,
+      "status": "unchanged",
+      "changes": [],
+      "position": {
+        "x": 320,
+        "y": 260
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "apiGateway|cache",
+      "sourceId": "apiGateway",
+      "targetId": "cache",
+      "description": "Caches sessions in",
+      "technology": "RESP",
+      "implied": false,
+      "relationshipIds": [
+        "r-apiGateway-cache"
+      ],
+      "status": "added",
+      "changes": []
+    },
+    {
+      "id": "apiGateway|catalogService",
+      "sourceId": "apiGateway",
+      "targetId": "catalogService",
+      "description": "Routes catalog requests to",
+      "technology": "gRPC",
+      "implied": false,
+      "relationshipIds": [
+        "r-apiGateway-catalogService"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "apiGateway|orderService",
+      "sourceId": "apiGateway",
+      "targetId": "orderService",
+      "description": "Routes order requests to",
+      "technology": "gRPC",
+      "implied": false,
+      "relationshipIds": [
+        "r-apiGateway-orderController",
+        "r-apiGateway-orderService"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "apiGateway|paymentService",
+      "sourceId": "apiGateway",
+      "targetId": "paymentService",
+      "description": "Routes payment requests to",
+      "technology": "gRPC",
+      "implied": false,
+      "relationshipIds": [
+        "r-apiGateway-paymentService"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "catalogService|catalogDb",
+      "sourceId": "catalogService",
+      "targetId": "catalogDb",
+      "description": "Reads and writes",
+      "technology": "MongoDB wire",
+      "implied": false,
+      "relationshipIds": [
+        "r-catalogService-catalogDb"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "customer|mobileApp",
+      "sourceId": "customer",
+      "targetId": "mobileApp",
+      "description": "Browses and orders using",
+      "technology": "",
+      "implied": false,
+      "relationshipIds": [
+        "r-customer-mobileApp"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "customer|webApp",
+      "sourceId": "customer",
+      "targetId": "webApp",
+      "description": "Browses and orders using",
+      "technology": "",
+      "implied": false,
+      "relationshipIds": [
+        "r-customer-webApp"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "messageBus|notificationService",
+      "sourceId": "messageBus",
+      "targetId": "notificationService",
+      "description": "Delivers events to",
+      "technology": "AMQP",
+      "implied": true,
+      "relationshipIds": [
+        "r-messageBus-eventListener"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "messageBus|paymentService",
+      "sourceId": "messageBus",
+      "targetId": "paymentService",
+      "description": "Delivers order events to",
+      "technology": "AMQP",
+      "implied": true,
+      "relationshipIds": [
+        "r-messageBus-paymentEventConsumer"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "mobileApp|apiGateway",
+      "sourceId": "mobileApp",
+      "targetId": "apiGateway",
+      "description": "Calls",
+      "technology": "HTTPS/JSON",
+      "implied": false,
+      "relationshipIds": [
+        "r-mobileApp-apiGateway"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "notificationService|emailProvider",
+      "sourceId": "notificationService",
+      "targetId": "emailProvider",
+      "description": "Sends email through",
+      "technology": "HTTPS/JSON",
+      "implied": false,
+      "relationshipIds": [
+        "r-emailSender-emailProvider",
+        "r-notificationService-emailProvider"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "notificationService|messageBus",
+      "sourceId": "notificationService",
+      "targetId": "messageBus",
+      "description": "Consumes events from",
+      "technology": "AMQP",
+      "implied": false,
+      "relationshipIds": [
+        "r-notificationService-messageBus"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "notificationService|mobileApp",
+      "sourceId": "notificationService",
+      "targetId": "mobileApp",
+      "description": "Sends push notifications to",
+      "technology": "FCM",
+      "implied": false,
+      "relationshipIds": [
+        "r-notificationService-mobileApp"
+      ],
+      "status": "removed",
+      "changes": []
+    },
+    {
+      "id": "orderService|catalogService",
+      "sourceId": "orderService",
+      "targetId": "catalogService",
+      "description": "Fetches prices from",
+      "technology": "gRPC",
+      "implied": false,
+      "relationshipIds": [
+        "r-orderService-catalogService",
+        "r-pricingClient-catalogService"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "orderService|messageBus",
+      "sourceId": "orderService",
+      "targetId": "messageBus",
+      "description": "Publishes order events to",
+      "technology": "AMQP",
+      "implied": false,
+      "relationshipIds": [
+        "r-orderEventPublisher-messageBus",
+        "r-orderService-messageBus"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "orderService|orderDb",
+      "sourceId": "orderService",
+      "targetId": "orderDb",
+      "description": "Reads and writes",
+      "technology": "JDBC",
+      "implied": false,
+      "relationshipIds": [
+        "r-orderRepository-orderDb",
+        "r-orderService-orderDb"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "orderService|paymentService",
+      "sourceId": "orderService",
+      "targetId": "paymentService",
+      "description": "Requests payment from",
+      "technology": "gRPC",
+      "implied": false,
+      "relationshipIds": [
+        "r-orderFacade-paymentController",
+        "r-orderService-paymentService"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "paymentService|messageBus",
+      "sourceId": "paymentService",
+      "targetId": "messageBus",
+      "description": "Publishes payment events to",
+      "technology": "AMQP",
+      "implied": false,
+      "relationshipIds": [
+        "r-paymentService-messageBus"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "paymentService|paymentDb",
+      "sourceId": "paymentService",
+      "targetId": "paymentDb",
+      "description": "Reads and writes",
+      "technology": "JDBC",
+      "implied": false,
+      "relationshipIds": [
+        "r-paymentRepository-paymentDb",
+        "r-paymentService-paymentDb"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "paymentService|psp",
+      "sourceId": "paymentService",
+      "targetId": "psp",
+      "description": "Authorises and captures payments with",
+      "technology": "HTTPS/JSON",
+      "implied": false,
+      "relationshipIds": [
+        "r-paymentService-psp",
+        "r-pspAdapter-psp"
+      ],
+      "status": "unchanged",
+      "changes": []
+    },
+    {
+      "id": "webApp|apiGateway",
+      "sourceId": "webApp",
+      "targetId": "apiGateway",
+      "description": "Calls",
+      "technology": "HTTPS/JSON",
+      "implied": false,
+      "relationshipIds": [
+        "r-webApp-apiGateway"
+      ],
+      "status": "unchanged",
+      "changes": []
+    }
+  ]
+}
