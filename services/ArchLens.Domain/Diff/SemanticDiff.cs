@@ -16,7 +16,8 @@ public static class SemanticDiff
         var summary = new DiffSummary(
             elements.Added.Count, elements.Removed.Count, elements.Modified.Count,
             relationships.Added.Count, relationships.Removed.Count, relationships.Modified.Count);
-        return new DiffResult(elements, relationships, [], summary);
+        var views = ViewImpactAnalysis.Analyze(baseModel, headModel, elements, relationships);
+        return new DiffResult(elements, relationships, views, summary);
     }
 
     private static ElementChanges DiffElements(ModelSnapshot baseModel, ModelSnapshot headModel)
