@@ -1,8 +1,10 @@
+using ArchLens.Core.Auth;
 using ArchLens.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddBffJwtAuthentication(validateAtStartup: true);
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("ArchLens") ?? "");
 
 builder.Services.AddDbContext<ArchLensDbContext>(o => o
@@ -17,8 +19,10 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ArchLen
     await scope.ServiceProvider.GetRequiredService<ArchLensDbContext>().Database.MigrateAsync();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 
 await app.RunAsync();
 return 0;
