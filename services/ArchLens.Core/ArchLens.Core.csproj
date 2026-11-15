@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <EmbeddedResource Include="..\..\reference-models\shopflow\base.json" LogicalName="templates/shopflow.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ArchLens.Domain\ArchLens.Domain.csproj" />
   </ItemGroup>
 
