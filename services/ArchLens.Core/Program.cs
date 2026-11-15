@@ -21,6 +21,7 @@ builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<Workspaces>();
+builder.Services.AddScoped<Versions>();
 builder.Services.AddDbContext<ArchLensDbContext>(o => o
     .UseNpgsql(builder.Configuration.GetConnectionString("ArchLens"))
     .UseSnakeCaseNamingConvention());
@@ -44,7 +45,8 @@ app.UseAuthorization();
 app.MapHealthChecks("/health").AllowAnonymous();
 
 app.MapGroup("/api/v1")
-    .MapWorkspaceEndpoints();
+    .MapWorkspaceEndpoints()
+    .MapVersionEndpoints();
 
 await app.RunAsync();
 return 0;
