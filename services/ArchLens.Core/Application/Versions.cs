@@ -71,6 +71,13 @@ public sealed class Versions(ArchLensDbContext db, Workspaces workspaces, TimePr
     internal async Task<ModelSnapshot?> Snapshot(CurrentUser user, Guid modelId, Guid versionId, CancellationToken ct) =>
         (await OwnedVersions(user).Where(v => v.Id == versionId && v.ModelId == modelId).Select(v => v.Snapshot).ToListAsync(ct)).FirstOrDefault();
 
+    internal async Task<ErrorOr<(ModelSnapshot Base, ModelSnapshot Head)>> Pair(CurrentUser user, Guid modelId, Guid from, Guid to, CancellationToken ct)
+    {
+        var a = await Snapshot(user, modelId, from, ct);
+        var b = await Snapshot(user, modelId, to, ct);
+        return a is null || b is null ? AppErrors.NotFound("version") : (a, b);
+    }
+
     private IQueryable<VersionRecord> OwnedVersions(CurrentUser user) =>
         db.Versions.AsNoTracking().Where(v => v.Model!.Workspace!.OwnerId == user.Id);
 
