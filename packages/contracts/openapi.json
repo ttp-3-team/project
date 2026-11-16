@@ -1,0 +1,2173 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "ArchLens Core API",
+    "description": "Generated from ArchLens Core's code, the single source of truth. Every endpoint except /health needs a JWT minted by the ArchLens web BFF.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/workspaces": {
+      "get": {
+        "tags": [
+          "Workspaces"
+        ],
+        "operationId": "listWorkspaces",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Workspace"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Workspaces"
+        ],
+        "operationId": "createWorkspace",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkspaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workspace"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}": {
+      "get": {
+        "tags": [
+          "Workspaces"
+        ],
+        "operationId": "getWorkspace",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workspace"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/workspaces/{workspaceId}/models": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "operationId": "listModels",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Model"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Models"
+        ],
+        "operationId": "createModel",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{modelId}": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "operationId": "getModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/templates/shopflow": {
+      "get": {
+        "tags": [
+          "Templates"
+        ],
+        "operationId": "getShopFlowTemplate",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelSnapshot"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{modelId}/drafts/compose": {
+      "post": {
+        "tags": [
+          "Drafts"
+        ],
+        "operationId": "createComposeDraft",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComposeDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComposeDraftResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{modelId}/versions": {
+      "get": {
+        "tags": [
+          "Versions"
+        ],
+        "operationId": "listVersions",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VersionSummary"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Versions"
+        ],
+        "operationId": "createVersion",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVersionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/versions/{versionId}": {
+      "get": {
+        "tags": [
+          "Versions"
+        ],
+        "operationId": "getVersion",
+        "parameters": [
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelVersion"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{modelId}/diff": {
+      "get": {
+        "tags": [
+          "Diff"
+        ],
+        "operationId": "diffVersions",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiffResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/diff": {
+      "post": {
+        "tags": [
+          "Diff"
+        ],
+        "operationId": "diffSnapshots",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiffRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiffResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/validate": {
+      "post": {
+        "tags": [
+          "Views"
+        ],
+        "operationId": "validateSnapshot",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapshotRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/views": {
+      "post": {
+        "tags": [
+          "Views"
+        ],
+        "operationId": "deriveViews",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SnapshotRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewGraph"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{modelId}/compare": {
+      "get": {
+        "tags": [
+          "Views"
+        ],
+        "operationId": "compareVersions",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareGraph"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    },
+    "/api/v1/compare": {
+      "post": {
+        "tags": [
+          "Views"
+        ],
+        "operationId": "compareSnapshots",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareGraph"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid BFF token"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChangeStatus": {
+        "enum": [
+          "added",
+          "removed",
+          "modified",
+          "unchanged"
+        ]
+      },
+      "CompareEdge": {
+        "required": [
+          "id",
+          "sourceId",
+          "targetId",
+          "description",
+          "technology",
+          "implied",
+          "relationshipIds",
+          "status",
+          "changes"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "implied": {
+            "type": "boolean"
+          },
+          "relationshipIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/ChangeStatus"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldChange"
+            }
+          }
+        }
+      },
+      "CompareGraph": {
+        "required": [
+          "view",
+          "nodes",
+          "edges"
+        ],
+        "type": "object",
+        "properties": {
+          "view": {
+            "$ref": "#/components/schemas/GraphView"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompareNode"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompareEdge"
+            }
+          }
+        }
+      },
+      "CompareNode": {
+        "required": [
+          "elementId",
+          "name",
+          "kind",
+          "technology",
+          "description",
+          "external",
+          "outside",
+          "childViewKey",
+          "hasChildren",
+          "status",
+          "changes",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "elementId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ElementKind"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "outside": {
+            "type": "boolean"
+          },
+          "childViewKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasChildren": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ChangeStatus"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldChange"
+            }
+          },
+          "position": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Point"
+              }
+            ]
+          }
+        }
+      },
+      "CompareRequest": {
+        "required": [
+          "base",
+          "head",
+          "view"
+        ],
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "head": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "view": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ComposeDraftRequest": {
+        "required": [
+          "composeYaml",
+          "targetSystemId",
+          "baseVersionId"
+        ],
+        "type": "object",
+        "properties": {
+          "composeYaml": {
+            "maxLength": 500000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "targetSystemId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "baseVersionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ComposeDraftResult": {
+        "required": [
+          "draft",
+          "diff",
+          "drift"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "diff": {
+            "$ref": "#/components/schemas/DiffResult"
+          },
+          "drift": {
+            "$ref": "#/components/schemas/DriftResult"
+          }
+        }
+      },
+      "CreateModelRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "snapshot": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ModelSnapshot"
+              }
+            ]
+          },
+          "message": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateVersionRequest": {
+        "required": [
+          "snapshot",
+          "message",
+          "parentVersionId"
+        ],
+        "type": "object",
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "message": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": "string"
+          },
+          "parentVersionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "commitSha": {
+            "pattern": "^[0-9a-f]{7,40}$",
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateWorkspaceRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiffRequest": {
+        "required": [
+          "base",
+          "head"
+        ],
+        "type": "object",
+        "properties": {
+          "base": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "head": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiffResult": {
+        "required": [
+          "elements",
+          "relationships",
+          "views",
+          "summary"
+        ],
+        "type": "object",
+        "properties": {
+          "elements": {
+            "$ref": "#/components/schemas/ElementChanges"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/RelationshipChanges"
+          },
+          "views": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewImpact"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/DiffSummary"
+          }
+        }
+      },
+      "DiffSummary": {
+        "required": [
+          "elementsAdded",
+          "elementsRemoved",
+          "elementsModified",
+          "relationshipsAdded",
+          "relationshipsRemoved",
+          "relationshipsModified"
+        ],
+        "type": "object",
+        "properties": {
+          "elementsAdded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "elementsRemoved": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "elementsModified": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relationshipsAdded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relationshipsRemoved": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "relationshipsModified": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DriftResult": {
+        "required": [
+          "ok",
+          "servicesWithoutContainer",
+          "containersWithoutService",
+          "messages"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "servicesWithoutContainer": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "containersWithoutService": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Element": {
+        "required": [
+          "id",
+          "kind",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ElementKind"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "parentId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ElementChanges": {
+        "required": [
+          "added",
+          "removed",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "added": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ElementRef"
+            }
+          },
+          "removed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ElementRef"
+            }
+          },
+          "modified": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ElementModified"
+            }
+          }
+        }
+      },
+      "ElementKind": {
+        "enum": [
+          "person",
+          "softwareSystem",
+          "container",
+          "component"
+        ]
+      },
+      "ElementModified": {
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "parentId",
+          "changes"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ElementKind"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldChange"
+            }
+          }
+        }
+      },
+      "ElementRef": {
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "parentId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ElementKind"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FieldChange": {
+        "required": [
+          "field",
+          "from",
+          "to"
+        ],
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      },
+      "GraphView": {
+        "required": [
+          "key",
+          "kind",
+          "title",
+          "label",
+          "scopeId",
+          "ancestors"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ViewKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scopeId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ancestors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewAncestor"
+            }
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Model": {
+        "required": [
+          "id",
+          "workspaceId",
+          "name",
+          "createdAt",
+          "latestVersionId",
+          "latestVersionNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workspaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "latestVersionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "latestVersionNumber": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ModelSnapshot": {
+        "required": [
+          "schemaVersion",
+          "elements",
+          "relationships",
+          "layout"
+        ],
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Element"
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Relationship"
+            }
+          },
+          "layout": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/Point"
+              }
+            }
+          }
+        }
+      },
+      "ModelVersion": {
+        "required": [
+          "snapshot",
+          "id",
+          "modelId",
+          "number",
+          "parentVersionId",
+          "message",
+          "commitSha",
+          "createdBy",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentVersionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          },
+          "commitSha": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Point": {
+        "required": [
+          "x",
+          "y"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "Relationship": {
+        "required": [
+          "id",
+          "sourceId",
+          "targetId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$",
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          }
+        }
+      },
+      "RelationshipChanges": {
+        "required": [
+          "added",
+          "removed",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "added": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelationshipRef"
+            }
+          },
+          "removed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelationshipRef"
+            }
+          },
+          "modified": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelationshipModified"
+            }
+          }
+        }
+      },
+      "RelationshipModified": {
+        "required": [
+          "id",
+          "sourceId",
+          "targetId",
+          "description",
+          "technology",
+          "changes"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldChange"
+            }
+          }
+        }
+      },
+      "RelationshipRef": {
+        "required": [
+          "id",
+          "sourceId",
+          "targetId",
+          "description",
+          "technology"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          }
+        }
+      },
+      "SnapshotRequest": {
+        "required": [
+          "snapshot"
+        ],
+        "type": "object",
+        "properties": {
+          "snapshot": {
+            "$ref": "#/components/schemas/ModelSnapshot"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationResult": {
+        "required": [
+          "ok",
+          "problems"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "problems": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "VersionSummary": {
+        "required": [
+          "id",
+          "modelId",
+          "number",
+          "parentVersionId",
+          "message",
+          "commitSha",
+          "createdBy",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentVersionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          },
+          "commitSha": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ViewAncestor": {
+        "required": [
+          "key",
+          "title",
+          "label"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewGraph": {
+        "required": [
+          "view",
+          "nodes",
+          "edges"
+        ],
+        "type": "object",
+        "properties": {
+          "view": {
+            "$ref": "#/components/schemas/GraphView"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewGraphNode"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewGraphEdge"
+            }
+          }
+        }
+      },
+      "ViewGraphEdge": {
+        "required": [
+          "id",
+          "sourceId",
+          "targetId",
+          "description",
+          "technology",
+          "implied",
+          "relationshipIds"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "targetId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "implied": {
+            "type": "boolean"
+          },
+          "relationshipIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ViewGraphNode": {
+        "required": [
+          "elementId",
+          "name",
+          "kind",
+          "technology",
+          "description",
+          "external",
+          "outside",
+          "childViewKey",
+          "hasChildren",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "elementId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ElementKind"
+          },
+          "technology": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "outside": {
+            "type": "boolean"
+          },
+          "childViewKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "hasChildren": {
+            "type": "boolean"
+          },
+          "position": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Point"
+              }
+            ]
+          }
+        }
+      },
+      "ViewImpact": {
+        "required": [
+          "key",
+          "kind",
+          "title",
+          "status",
+          "affected",
+          "reasons"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ViewKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ViewStatus"
+          },
+          "affected": {
+            "type": "boolean"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ViewKind": {
+        "enum": [
+          "context",
+          "container",
+          "component"
+        ]
+      },
+      "ViewStatus": {
+        "enum": [
+          "added",
+          "removed",
+          "changed",
+          "unchanged"
+        ]
+      },
+      "Workspace": {
+        "required": [
+          "id",
+          "name",
+          "ownerId",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Workspaces"
+    },
+    {
+      "name": "Models"
+    },
+    {
+      "name": "Templates"
+    },
+    {
+      "name": "Drafts"
+    },
+    {
+      "name": "Versions"
+    },
+    {
+      "name": "Diff"
+    },
+    {
+      "name": "Views"
+    }
+  ]
+}

@@ -11,7 +11,7 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
-    "contracts:gen": "pnpm -C packages/contracts gen",
+    "contracts:gen": "dotnet build services/ArchLens.Core && pnpm -C packages/contracts gen",
     "core:dev": "dotnet run --project services/ArchLens.Core",
     "core:test": "dotnet test ArchLens.slnx"
   },

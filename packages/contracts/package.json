@@ -3,12 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Generated artifacts only: the model JSON Schema exported from ArchLens.Domain. Do not edit by hand.",
+  "description": "Generated artifacts only: OpenAPI exported from ArchLens Core, the model JSON Schema exported from ArchLens.Domain, and TypeScript types, zod schemas and a fetch SDK generated from the OpenAPI document by Hey API. Do not edit by hand.",
   "exports": {
+    "./types": "./generated/ts/types.gen.ts",
+    "./zod": "./generated/ts/zod.gen.ts",
+    "./sdk": "./generated/ts/sdk.gen.ts",
+    "./client": "./generated/ts/client/index.ts",
+    "./openapi.json": "./openapi.json",
     "./model.schema.json": "./model.schema.json"
   },
   "scripts": {
-    "gen": "pnpm gen:schema",
-    "gen:schema": "dotnet run --project ../../tools/ArchLens.SchemaExport -- model.schema.json"
+    "gen": "pnpm gen:schema && pnpm gen:ts",
+    "gen:schema": "dotnet run --project ../../tools/ArchLens.SchemaExport -- model.schema.json",
+    "gen:ts": "openapi-ts"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
   }
 }

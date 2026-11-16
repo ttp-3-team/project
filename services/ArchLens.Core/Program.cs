@@ -1,16 +1,18 @@
+using System.Reflection;
 using ArchLens.Core.Application;
 using ArchLens.Core.Auth;
 using ArchLens.Core.Data;
 using ArchLens.Core.Endpoints;
 using ArchLens.Core.OpenApi;
 using ArchLens.Domain.Model;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddBffJwtAuthentication(validateAtStartup: true);
+var exportingOpenApi = Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
+
+builder.Services.AddBffJwtAuthentication(validateAtStartup: !exportingOpenApi);
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("ArchLens") ?? "");
 
 builder.Services.ConfigureHttpJsonOptions(o =>
@@ -32,7 +34,7 @@ builder.Services.AddDbContext<ArchLensDbContext>(o => o
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ArchLens:MigrateOnStartup"))
+if (!exportingOpenApi && (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ArchLens:MigrateOnStartup")))
 {
     using var scope = app.Services.CreateScope();
     await scope.ServiceProvider.GetRequiredService<ArchLensDbContext>().Database.MigrateAsync();
