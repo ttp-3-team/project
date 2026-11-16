@@ -2,9 +2,11 @@ using ArchLens.Core.Application;
 using ArchLens.Core.Auth;
 using ArchLens.Core.Data;
 using ArchLens.Core.Endpoints;
+using ArchLens.Core.OpenApi;
 using ArchLens.Domain.Model;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
+builder.Services.AddArchLensOpenApi();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<Workspaces>();
 builder.Services.AddScoped<Versions>();
@@ -44,6 +47,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHealthChecks("/health").AllowAnonymous();
+
+app.MapOpenApi("/openapi/{documentName}.json").AllowAnonymous();
+app.MapScalarApiReference("/docs", o => o.WithTitle("ArchLens Core API").WithOpenApiRoutePattern("/openapi/{documentName}.json")).AllowAnonymous();
 
 app.MapGroup("/api/v1")
     .MapWorkspaceEndpoints()
