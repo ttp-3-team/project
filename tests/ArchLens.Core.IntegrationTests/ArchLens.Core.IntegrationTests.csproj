@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.15" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.17.0" />
+    <PackageReference Include="Verify.Xunit" Version="31.12.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\services\ArchLens.Core\ArchLens.Core.csproj" />
   </ItemGroup>
 

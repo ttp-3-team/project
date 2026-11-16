@@ -1,0 +1,109 @@
+﻿{
+  "elements": {
+    "added": [
+      {
+        "id": "cache",
+        "kind": "container",
+        "name": "Session Cache",
+        "parentId": "shop"
+      }
+    ],
+    "removed": [],
+    "modified": [
+      {
+        "id": "mobileApp",
+        "kind": "container",
+        "name": "Mobile Storefront",
+        "parentId": "shop",
+        "changes": [
+          {
+            "field": "name",
+            "from": "Mobile App",
+            "to": "Mobile Storefront"
+          },
+          {
+            "field": "technology",
+            "from": "Kotlin / Android",
+            "to": "Kotlin Multiplatform"
+          }
+        ]
+      }
+    ]
+  },
+  "relationships": {
+    "added": [
+      {
+        "id": "r-apiGateway-cache",
+        "sourceId": "apiGateway",
+        "targetId": "cache",
+        "description": "Caches sessions in",
+        "technology": "RESP"
+      }
+    ],
+    "removed": [
+      {
+        "id": "r-notificationService-mobileApp",
+        "sourceId": "notificationService",
+        "targetId": "mobileApp",
+        "description": "Sends push notifications to",
+        "technology": "FCM"
+      }
+    ],
+    "modified": []
+  },
+  "views": [
+    {
+      "key": "context",
+      "kind": "context",
+      "title": "System context",
+      "status": "unchanged",
+      "affected": false,
+      "reasons": []
+    },
+    {
+      "key": "container:shop",
+      "kind": "container",
+      "title": "Containers: ShopFlow",
+      "status": "changed",
+      "affected": true,
+      "reasons": [
+        "added element 'Session Cache'",
+        "modified element 'Mobile Storefront': name, technology",
+        "added relationship 'API Gateway' → 'Session Cache'",
+        "removed relationship 'Notification Service' → 'Mobile Storefront'"
+      ]
+    },
+    {
+      "key": "component:notificationService",
+      "kind": "component",
+      "title": "Components: Notification Service",
+      "status": "unchanged",
+      "affected": false,
+      "reasons": []
+    },
+    {
+      "key": "component:orderService",
+      "kind": "component",
+      "title": "Components: Order Service",
+      "status": "unchanged",
+      "affected": false,
+      "reasons": []
+    },
+    {
+      "key": "component:paymentService",
+      "kind": "component",
+      "title": "Components: Payment Service",
+      "status": "unchanged",
+      "affected": false,
+      "reasons": []
+    }
+  ],
+  "summary": {
+    "elementsAdded": 1,
+    "elementsRemoved": 0,
+    "elementsModified": 1,
+    "relationshipsAdded": 1,
+    "relationshipsRemoved": 1,
+    "relationshipsModified": 0
+  }
+}
