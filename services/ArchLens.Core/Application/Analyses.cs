@@ -3,12 +3,13 @@ using ArchLens.Core.Contracts;
 using ArchLens.Domain;
 using ArchLens.Domain.Compose;
 using ArchLens.Domain.Diff;
+using ArchLens.Domain.Graph;
 using ArchLens.Domain.Model;
 using ErrorOr;
 
 namespace ArchLens.Core.Application;
 
-/// <summary>Analyses of stored versions and of snapshots in the request: diffs and compose drafts. Nothing is stored.</summary>
+/// <summary>Analyses of stored versions and of snapshots in the request: diffs, compose drafts, validation, derived views and compare graphs. Nothing is stored.</summary>
 public sealed class Analyses(Versions versions)
 {
     public async Task<ErrorOr<DiffResult>> Diff(CurrentUser user, Guid modelId, Guid from, Guid to, CancellationToken ct) =>
@@ -26,6 +27,26 @@ public sealed class Analyses(Versions versions)
         var target = ComposeDraft.CheckTarget(current, request.TargetSystemId);
         if (target is not null) return AppErrors.BadRequest("Invalid target system", target);
         return ComposeDraftResult.Run(current, compose.Value, request.TargetSystemId, () => Guid.NewGuid().ToString());
+    }
+
+    public static ValidationResult Validate(ModelSnapshot snapshot)
+    {
+        var problems = SnapshotValidator.Validate(snapshot.Normalize());
+        return new ValidationResult { Ok = problems.Count == 0, Problems = problems };
+    }
+
+    public static IReadOnlyList<ViewGraph> Views(ModelSnapshot snapshot) => ViewGraph.All(snapshot.Normalize());
+
+    public static ErrorOr<CompareGraph> Compare(CompareRequest request) =>
+        Checked(request.Base, request.Head, (a, b) => Graph(a, b, request.View));
+
+    public async Task<ErrorOr<CompareGraph>> Compare(CurrentUser user, Guid modelId, Guid from, Guid to, string view, CancellationToken ct) =>
+        (await versions.Pair(user, modelId, from, to, ct)).Then(p => Graph(p.Base, p.Head, view));
+
+    private static ErrorOr<CompareGraph> Graph(ModelSnapshot a, ModelSnapshot b, string view)
+    {
+        var graph = CompareGraph.Build(a, b, SemanticDiff.Compute(a, b), view);
+        return graph is null ? AppErrors.NotFound($"view '{view}'") : graph;
     }
 
     private static ErrorOr<T> Checked<T>(ModelSnapshot baseModel, ModelSnapshot headModel, Func<ModelSnapshot, ModelSnapshot, ErrorOr<T>> run)

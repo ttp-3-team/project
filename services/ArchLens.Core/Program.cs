@@ -49,7 +49,8 @@ app.MapGroup("/api/v1")
     .MapWorkspaceEndpoints()
     .MapVersionEndpoints()
     .MapDiffEndpoints()
-    .MapDraftEndpoints();
+    .MapDraftEndpoints()
+    .MapViewEndpoints();
 
 await app.RunAsync();
 return 0;
