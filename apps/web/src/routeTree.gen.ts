@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppMModelIdRouteImport } from './routes/_app.m.$modelId'
+import { Route as AppWWorkspaceIdRouteImport } from './routes/_app.w.$workspaceId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const AppRoute = AppRouteImport.update({
@@ -28,6 +30,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMModelIdRoute = AppMModelIdRouteImport.update({
+  id: '/m/$modelId',
+  path: '/m/$modelId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWWorkspaceIdRoute = AppWWorkspaceIdRouteImport.update({
+  id: '/w/$workspaceId',
+  path: '/w/$workspaceId',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -37,11 +49,15 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
+  '/m/$modelId': typeof AppMModelIdRoute
+  '/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/': typeof AppIndexRoute
+  '/m/$modelId': typeof AppMModelIdRoute
+  '/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -49,14 +65,23 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/m/$modelId': typeof AppMModelIdRoute
+  '/_app/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/api/auth/$'
+  fullPaths: '/' | '/login' | '/m/$modelId' | '/w/$workspaceId' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/api/auth/$'
-  id: '__root__' | '/_app' | '/login' | '/_app/' | '/api/auth/$'
+  to: '/login' | '/' | '/m/$modelId' | '/w/$workspaceId' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/login'
+    | '/_app/'
+    | '/_app/m/$modelId'
+    | '/_app/w/$workspaceId'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +113,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/m/$modelId': {
+      id: '/_app/m/$modelId'
+      path: '/m/$modelId'
+      fullPath: '/m/$modelId'
+      preLoaderRoute: typeof AppMModelIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/w/$workspaceId': {
+      id: '/_app/w/$workspaceId'
+      path: '/w/$workspaceId'
+      fullPath: '/w/$workspaceId'
+      preLoaderRoute: typeof AppWWorkspaceIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -100,10 +139,14 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppMModelIdRoute: typeof AppMModelIdRoute
+  AppWWorkspaceIdRoute: typeof AppWWorkspaceIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppMModelIdRoute: AppMModelIdRoute,
+  AppWWorkspaceIdRoute: AppWWorkspaceIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
