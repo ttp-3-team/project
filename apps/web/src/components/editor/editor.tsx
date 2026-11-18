@@ -119,7 +119,12 @@ export function Editor(props: EditorProps) {
           >
             <Workflow /> Auto layout
           </Button>
-          <HistorySheet modelId={props.model.id} currentVersionId={props.version?.id ?? null} />
+          <HistorySheet
+            modelId={props.model.id}
+            currentVersionId={props.version?.id ?? null}
+            viewKey={viewKey}
+            dirty={dirty}
+          />
           <Button
             size="sm"
             variant="ghost"
