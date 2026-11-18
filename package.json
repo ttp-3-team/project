@@ -13,10 +13,7 @@
     "test": "pnpm -r --if-present test",
     "contracts:gen": "dotnet build services/ArchLens.Core && pnpm -C packages/contracts gen",
     "core:dev": "dotnet run --project services/ArchLens.Core",
-    "core:test": "dotnet test ArchLens.slnx",
-    "test:report": "pnpm test:report:core && pnpm test:report:web",
-    "test:report:core": "dotnet test ArchLens.slnx --logger \"trx;LogFilePrefix=results\" --logger \"html;LogFilePrefix=results\" --results-directory artifacts/test-results",
-    "test:report:web": "pnpm -C apps/web test --reporter=default --reporter=junit --outputFile.junit=../../artifacts/test-results/web-junit.xml"
+    "core:test": "dotnet test ArchLens.slnx"
   },
   "pnpm": {
     "overrides": {
