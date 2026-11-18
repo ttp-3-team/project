@@ -1,8 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
-import { LoaderCircle, Workflow } from 'lucide-react'
+import { Download, LoaderCircle, Workflow } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { toast } from 'sonner'
 import { Inspector } from './inspector'
+import { SaveVersionDialog } from './save-version-dialog'
 import { useCoreViews } from './use-core-views'
 import type { Selection } from './inspector'
 import type { EditorAction } from '#/model/editor'
@@ -12,6 +13,7 @@ import { LoadingState, StateBlock } from '#/components/states'
 import { Button } from '#/components/ui/button'
 import { Breadcrumbs } from '#/components/views/breadcrumbs'
 import { usePlacedPositions } from '#/components/views/use-placed-positions'
+import { downloadJson, fileNameOf } from '#/lib/download'
 import { errorMessage } from '#/lib/core-result'
 import { apply, changesModel, differs } from '#/model/editor'
 import { fromViewGraph } from '#/model/flow'
@@ -67,6 +69,8 @@ export function Editor(props: EditorProps) {
     void navigate({ to: '/m/$modelId', params: { modelId: props.model.id }, search: { view: key } })
   }
 
+  const saveBlocked = !dirty ? 'no changes' : problems.length > 0 ? 'the model has problems' : null
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-11 shrink-0 items-center gap-3 border-b px-4 text-sm">
@@ -106,6 +110,31 @@ export function Editor(props: EditorProps) {
           >
             <Workflow /> Auto layout
           </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={!props.version}
+            title={
+              props.version
+                ? dirty
+                  ? 'Exports the saved version, without unsaved changes'
+                  : undefined
+                : 'No saved version yet'
+            }
+            onClick={() => {
+              if (!props.version) return
+              downloadJson(`archlens-${fileNameOf(props.model.name)}-v${props.version.number}.json`, props.version)
+            }}
+          >
+            <Download /> Export
+          </Button>
+          <SaveVersionDialog
+            modelId={props.model.id}
+            parentVersionId={props.version?.id ?? null}
+            snapshot={snapshot}
+            disabled={saveBlocked !== null}
+          />
+          {saveBlocked && <span className="text-xs text-muted-foreground">({saveBlocked})</span>}
         </div>
       </div>
       <div className="flex min-h-0 flex-1">
