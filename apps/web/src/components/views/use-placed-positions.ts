@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { resolvePositions } from '#/model/flow'
-import { NODE_HEIGHT, NODE_WIDTH } from '#/model/node-size'
+import { layoutView } from '#/model/layout'
 import type { CompareGraph, Point } from '#/model/types'
 
 type PlacedPositions = {
@@ -8,30 +9,33 @@ type PlacedPositions = {
   readonly placedByClient: boolean
 }
 
-const GAP = 60
-const PER_COLUMN = 4
-
-/** Positions for every node: the local layout, then Core's; unpositioned nodes go on a grid right of the others. */
+/** Positions for every node (local layout, then Core's, then ELK for the rest), or null while ELK is placing. */
 export function usePlacedPositions(
   graph: CompareGraph | null,
   local: Readonly<Record<string, Point>> | undefined,
 ): PlacedPositions {
-  return useMemo((): PlacedPositions => {
-    if (!graph) return { positions: null, placedByClient: false }
-    const resolved = resolvePositions(graph, local)
-    const known: Record<string, Point> = Object.fromEntries(
-      Object.entries(resolved).flatMap(([id, p]) => (p ? [[id, p]] : [])),
-    )
-    const missing = Object.keys(resolved).filter((id) => !known[id])
-    const points = Object.values(known)
-    const startX = points.length ? Math.max(...points.map((p) => p.x)) + NODE_WIDTH + GAP : 0
-    const topY = points.length ? Math.min(...points.map((p) => p.y)) : 0
-    missing.forEach((id, i) => {
-      known[id] = {
-        x: startX + Math.floor(i / PER_COLUMN) * (NODE_WIDTH + GAP),
-        y: topY + (i % PER_COLUMN) * (NODE_HEIGHT + GAP),
-      }
-    })
-    return { positions: known, placedByClient: missing.length > 0 }
+  const { known, missing } = useMemo(() => {
+    const resolved = Object.entries(graph ? resolvePositions(graph, local) : {})
+    return {
+      known: Object.fromEntries(resolved.flatMap(([id, p]) => (p ? [[id, p]] : []))),
+      missing: resolved.flatMap(([id, p]) => (p ? [] : [id])),
+    }
   }, [graph, local])
+  const placed = useQuery({
+    queryKey: ['layout', graph?.view.key, graph?.edges.map((e) => e.id), known, missing],
+    queryFn: () =>
+      layoutView(
+        graph!.nodes.map((n) => n.elementId),
+        graph!.edges,
+        known,
+      ),
+    enabled: graph !== null && missing.length > 0,
+    staleTime: Infinity,
+  })
+
+  return useMemo(() => {
+    if (!graph) return { positions: null, placedByClient: false }
+    if (missing.length === 0) return { positions: known, placedByClient: false }
+    return { positions: placed.data ? { ...placed.data, ...known } : null, placedByClient: true }
+  }, [graph, known, missing, placed.data])
 }

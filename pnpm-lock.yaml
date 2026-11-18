@@ -52,6 +52,9 @@ importers:
       clsx:
         specifier: 2.1.1
         version: 2.1.1
+      elkjs:
+        specifier: 0.11.0
+        version: 0.11.0
       immer:
         specifier: 11.2.10
         version: 11.2.10
@@ -2285,6 +2288,9 @@ packages:
 
   electron-to-chromium@1.5.490:
     resolution: {integrity: sha512-I0dPyEsiaYAlbGJlr0SdRRGSWk9BpOz8AIo/4f93A6bAGuN3YafmT71rpss72SA05isaAkcAOYcW0F0H48om4Q==}
+
+  elkjs@0.11.0:
+    resolution: {integrity: sha512-u4J8h9mwEDaYMqo0RYJpqNMFDoMK7f+pu4GjcV+N8jIC7TRdORgzkfSjTJemhqONFfH6fBI3wpysgWbhgVWIXw==}
 
   enhanced-resolve@5.27.0:
     resolution: {integrity: sha512-Do6BB2xzlcc/odFg+XEYyneAx4T/WfywO71yw9ePS2tVfRsf7JVR4mUeELadIeHzixkzbG5DpluiEFPi2WGfYQ==}
@@ -5646,6 +5652,8 @@ snapshots:
   dotenv@17.4.2: {}
 
   electron-to-chromium@1.5.490: {}
+
+  elkjs@0.11.0: {}
 
   enhanced-resolve@5.27.0:
     dependencies:

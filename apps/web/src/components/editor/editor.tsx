@@ -1,18 +1,21 @@
 import { useNavigate } from '@tanstack/react-router'
-import { LoaderCircle } from 'lucide-react'
+import { LoaderCircle, Workflow } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
+import { toast } from 'sonner'
 import { Inspector } from './inspector'
 import { useCoreViews } from './use-core-views'
-import type { ModelInfo, ModelVersion, Snapshot, ViewKind } from '#/model/types'
 import type { Selection } from './inspector'
 import type { EditorAction } from '#/model/editor'
+import type { ModelInfo, ModelVersion, Snapshot, ViewKind } from '#/model/types'
 import { ModelCanvas } from '#/components/canvas/model-canvas'
 import { LoadingState, StateBlock } from '#/components/states'
+import { Button } from '#/components/ui/button'
 import { Breadcrumbs } from '#/components/views/breadcrumbs'
 import { usePlacedPositions } from '#/components/views/use-placed-positions'
 import { errorMessage } from '#/lib/core-result'
 import { apply, changesModel, differs } from '#/model/editor'
 import { fromViewGraph } from '#/model/flow'
+import { layoutView } from '#/model/layout'
 
 const EMPTY: Readonly<Record<ViewKind, readonly [string, string]>> = {
   context: ['The model is empty', 'Add the first software system or person in the panel on the right.'],
@@ -43,6 +46,8 @@ export function Editor(props: EditorProps) {
   const [state, dispatch] = useReducer(reduce, { snapshot: props.snapshot, revision: 0 })
   const { snapshot } = state
   const [selection, setSelection] = useState<Selection>(null)
+  const [fitBump, setFitBump] = useState(0)
+  const [layingOut, setLayingOut] = useState(false)
   const dirty = differs(props.snapshot, snapshot)
   const navigate = useNavigate()
 
@@ -76,6 +81,32 @@ export function Editor(props: EditorProps) {
         {pending && (
           <LoaderCircle className="size-3.5 animate-spin text-muted-foreground" aria-label="Updating views" />
         )}
+        <div className="ml-auto flex items-center gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={layingOut || !graph}
+            onClick={async () => {
+              if (!graph) return
+              setLayingOut(true)
+              try {
+                const positions = await layoutView(
+                  graph.nodes.map((n) => n.elementId),
+                  graph.edges,
+                  {},
+                )
+                dispatch({ type: 'replaceLayout', viewKey: graph.view.key, positions })
+                setFitBump((n) => n + 1)
+              } catch (error) {
+                toast.error(`Auto layout failed: ${errorMessage(error)}`)
+              } finally {
+                setLayingOut(false)
+              }
+            }}
+          >
+            <Workflow /> Auto layout
+          </Button>
+        </div>
       </div>
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
@@ -88,10 +119,20 @@ export function Editor(props: EditorProps) {
             <ModelCanvas
               graph={graph}
               positions={placed.positions}
-              fitKey={`${graph.view.key}:${placed.placedByClient ? 'client' : 'stored'}`}
+              fitKey={`${graph.view.key}:${placed.placedByClient ? 'client' : 'stored'}:${fitBump}`}
               selectedId={selection?.id ?? null}
               onSelect={setSelection}
               onOpen={openView}
+              onMoved={(moved) => {
+                const unstored = Object.fromEntries(
+                  Object.entries(placed.positions ?? {}).filter(([id]) => !local?.[id]),
+                )
+                dispatch({
+                  type: 'moveElements',
+                  viewKey: graph.view.key,
+                  positions: { ...unstored, ...moved },
+                })
+              }}
               onConnect={(sourceId, targetId) =>
                 dispatch({
                   type: 'addRelationship',
