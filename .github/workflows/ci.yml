@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Contracts (generated from Core, must be committed)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+      - run: pnpm install --frozen-lockfile
+      - name: Build Core (exports openapi.json), export model.schema.json, generate types, zod schemas and SDK
+        run: pnpm contracts:gen
+      - name: Generated contracts must be committed
+        run: git diff --exit-code -- packages/contracts
+
+  core:
+    name: Core (.NET build, unit, CLI and integration tests)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+      - name: Test (integration tests start Postgres with Testcontainers)
+        run: >-
+          dotnet test ArchLens.slnx -c Release -p:RestoreLockedMode=true
+          --logger "trx;LogFilePrefix=results"
+          --results-directory artifacts/test-results
+      - uses: dorny/test-reporter@v3
+        if: always()
+        with:
+          name: .NET tests
+          path: artifacts/test-results/*.trx
+          reporter: dotnet-trx
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: core-test-results
+          path: artifacts/test-results
+
+  web:
+    name: Web (typecheck, lint, format, unit tests, build)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -C apps/web typecheck
+      - run: pnpm -C apps/web lint
+      - run: pnpm -C apps/web format:check
+      - run: pnpm test:report:web
+      - run: pnpm -C apps/web build
+      - uses: dorny/test-reporter@v3
+        if: always()
+        with:
+          name: Web tests
+          path: artifacts/test-results/web-junit.xml
+          reporter: java-junit
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: web-test-results
+          path: artifacts/test-results
