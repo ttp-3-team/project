@@ -15,6 +15,7 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppMModelIdRouteImport } from './routes/_app.m.$modelId'
 import { Route as AppWWorkspaceIdRouteImport } from './routes/_app.w.$workspaceId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppMModelIdCompareRouteImport } from './routes/_app.m.$modelId_.compare'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -45,6 +46,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppMModelIdCompareRoute = AppMModelIdCompareRouteImport.update({
+  id: '/m/$modelId_/compare',
+  path: '/m/$modelId/compare',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/m/$modelId': typeof AppMModelIdRoute
   '/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/m/$modelId/compare': typeof AppMModelIdCompareRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/m/$modelId': typeof AppMModelIdRoute
   '/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/m/$modelId/compare': typeof AppMModelIdCompareRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,25 @@ export interface FileRoutesById {
   '/_app/m/$modelId': typeof AppMModelIdRoute
   '/_app/w/$workspaceId': typeof AppWWorkspaceIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_app/m/$modelId_/compare': typeof AppMModelIdCompareRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/m/$modelId' | '/w/$workspaceId' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/m/$modelId'
+    | '/w/$workspaceId'
+    | '/api/auth/$'
+    | '/m/$modelId/compare'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/m/$modelId' | '/w/$workspaceId' | '/api/auth/$'
+  to:
+    | '/login'
+    | '/'
+    | '/m/$modelId'
+    | '/w/$workspaceId'
+    | '/api/auth/$'
+    | '/m/$modelId/compare'
   id:
     | '__root__'
     | '/_app'
@@ -82,6 +103,7 @@ export interface FileRouteTypes {
     | '/_app/m/$modelId'
     | '/_app/w/$workspaceId'
     | '/api/auth/$'
+    | '/_app/m/$modelId_/compare'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/m/$modelId_/compare': {
+      id: '/_app/m/$modelId_/compare'
+      path: '/m/$modelId/compare'
+      fullPath: '/m/$modelId/compare'
+      preLoaderRoute: typeof AppMModelIdCompareRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -141,12 +170,14 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppMModelIdRoute: typeof AppMModelIdRoute
   AppWWorkspaceIdRoute: typeof AppWWorkspaceIdRoute
+  AppMModelIdCompareRoute: typeof AppMModelIdCompareRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppMModelIdRoute: AppMModelIdRoute,
   AppWWorkspaceIdRoute: AppWWorkspaceIdRoute,
+  AppMModelIdCompareRoute: AppMModelIdCompareRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
