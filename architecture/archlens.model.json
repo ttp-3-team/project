@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "elements": [
+    {
+      "id": "developer",
+      "kind": "person",
+      "name": "Developer",
+      "description": "Models and evolves the team's architecture.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": false
+    },
+    {
+      "id": "reviewer",
+      "kind": "person",
+      "name": "Reviewer",
+      "description": "Reviews architecture changes in pull requests.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": false
+    },
+    {
+      "id": "archlens",
+      "kind": "softwareSystem",
+      "name": "ArchLens",
+      "description": "C4 models, immutable versions, visual comparison and drift checks.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": false
+    },
+    {
+      "id": "github",
+      "kind": "softwareSystem",
+      "name": "GitHub",
+      "description": "Sign-in (OAuth) and pull requests.",
+      "technology": "",
+      "tags": [],
+      "parentId": null,
+      "external": true
+    },
+    {
+      "id": "web",
+      "kind": "container",
+      "name": "Web App",
+      "description": "UI and BFF: canvas, editor, compare view; mints JWTs for Core.",
+      "technology": "TanStack Start / React",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "archlens",
+      "external": false
+    },
+    {
+      "id": "core",
+      "kind": "container",
+      "name": "Core API",
+      "description": "Workspaces, models, immutable versions, semantic diff, compose draft.",
+      "technology": "ASP.NET Core / .NET 10",
+      "tags": [
+        "deployed"
+      ],
+      "parentId": "archlens",
+      "external": false
+    },
+    {
+      "id": "postgres",
+      "kind": "container",
+      "name": "Database",
+      "description": "Versions as jsonb (immutable by trigger) and auth tables.",
+      "technology": "PostgreSQL 17",
+      "tags": [
+        "Database",
+        "deployed"
+      ],
+      "parentId": "archlens",
+      "external": false
+    },
+    {
+      "id": "endpoints",
+      "kind": "component",
+      "name": "HTTP Endpoints",
+      "description": "Minimal API routes, JWT auth, owner checks, problem details.",
+      "technology": "ASP.NET Core minimal APIs",
+      "tags": [],
+      "parentId": "core",
+      "external": false
+    },
+    {
+      "id": "diffEngine",
+      "kind": "component",
+      "name": "Diff Engine",
+      "description": "Deterministic semantic diff and affected views.",
+      "technology": "ArchLens.Domain",
+      "tags": [],
+      "parentId": "core",
+      "external": false
+    },
+    {
+      "id": "composeAnalyzer",
+      "kind": "component",
+      "name": "Compose Analyzer",
+      "description": "docker-compose draft and drift rule R1.",
+      "technology": "ArchLens.Domain + YamlDotNet",
+      "tags": [],
+      "parentId": "core",
+      "external": false
+    },
+    {
+      "id": "persistence",
+      "kind": "component",
+      "name": "Persistence",
+      "description": "Workspaces, models and versions.",
+      "technology": "EF Core + Npgsql",
+      "tags": [],
+      "parentId": "core",
+      "external": false
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r-developer-web",
+      "sourceId": "developer",
+      "targetId": "web",
+      "description": "Edits models, compares versions",
+      "technology": "HTTPS"
+    },
+    {
+      "id": "r-reviewer-github",
+      "sourceId": "reviewer",
+      "targetId": "github",
+      "description": "Reviews pull requests in",
+      "technology": ""
+    },
+    {
+      "id": "r-web-github",
+      "sourceId": "web",
+      "targetId": "github",
+      "description": "Signs users in with",
+      "technology": "OAuth 2.0"
+    },
+    {
+      "id": "r-web-endpoints",
+      "sourceId": "web",
+      "targetId": "endpoints",
+      "description": "Calls with a minted JWT",
+      "technology": "HTTPS/JSON"
+    },
+    {
+      "id": "r-web-postgres",
+      "sourceId": "web",
+      "targetId": "postgres",
+      "description": "Stores sessions in",
+      "technology": "SQL"
+    },
+    {
+      "id": "r-endpoints-diffEngine",
+      "sourceId": "endpoints",
+      "targetId": "diffEngine",
+      "description": "Computes diffs with",
+      "technology": ""
+    },
+    {
+      "id": "r-endpoints-composeAnalyzer",
+      "sourceId": "endpoints",
+      "targetId": "composeAnalyzer",
+      "description": "Builds drafts with",
+      "technology": ""
+    },
+    {
+      "id": "r-endpoints-persistence",
+      "sourceId": "endpoints",
+      "targetId": "persistence",
+      "description": "Reads and writes through",
+      "technology": ""
+    },
+    {
+      "id": "r-composeAnalyzer-diffEngine",
+      "sourceId": "composeAnalyzer",
+      "targetId": "diffEngine",
+      "description": "Diffs drafts with",
+      "technology": ""
+    },
+    {
+      "id": "r-persistence-postgres",
+      "sourceId": "persistence",
+      "targetId": "postgres",
+      "description": "Reads and writes",
+      "technology": "SQL"
+    }
+  ],
+  "layout": {
+    "context": {
+      "developer": {
+        "x": 0,
+        "y": 0
+      },
+      "reviewer": {
+        "x": 0,
+        "y": 260
+      },
+      "archlens": {
+        "x": 380,
+        "y": 0
+      },
+      "github": {
+        "x": 380,
+        "y": 260
+      }
+    },
+    "container:archlens": {
+      "developer": {
+        "x": 0,
+        "y": 120
+      },
+      "web": {
+        "x": 360,
+        "y": 120
+      },
+      "core": {
+        "x": 720,
+        "y": 120
+      },
+      "postgres": {
+        "x": 720,
+        "y": 340
+      },
+      "github": {
+        "x": 360,
+        "y": 340
+      }
+    },
+    "component:core": {
+      "web": {
+        "x": 0,
+        "y": 160
+      },
+      "endpoints": {
+        "x": 360,
+        "y": 160
+      },
+      "diffEngine": {
+        "x": 720,
+        "y": 0
+      },
+      "composeAnalyzer": {
+        "x": 720,
+        "y": 200
+      },
+      "persistence": {
+        "x": 720,
+        "y": 400
+      },
+      "postgres": {
+        "x": 1080,
+        "y": 400
+      }
+    }
+  }
+}
