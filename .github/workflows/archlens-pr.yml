@@ -1,0 +1,82 @@
+name: ArchLens PR check
+
+on:
+  pull_request:
+    paths:
+      - architecture/**
+      - docker-compose.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: archlens-artifacts
+  cancel-in-progress: false
+
+jobs:
+  archlens:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      MODEL: architecture/archlens.model.json
+      PR: ${{ github.event.pull_request.number }}
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Build the CLI (a build failure fails here, never looks like drift)
+        run: dotnet build services/ArchLens.Cli -c Release
+      - name: Base model (falls back to head when the file is new)
+        run: git show "$BASE_SHA:$MODEL" > "$RUNNER_TEMP/base.json" 2>/dev/null || cp "$MODEL" "$RUNNER_TEMP/base.json"
+      - name: ArchLens diff
+        id: diff
+        run: |
+          RAW="https://raw.githubusercontent.com/${{ github.repository }}/archlens-artifacts/pr-$PR/$HEAD_SHA"
+          set +e
+          dotnet run --project services/ArchLens.Cli -c Release --no-build -- diff \
+            --base "$RUNNER_TEMP/base.json" --head "$MODEL" \
+            --compose docker-compose.yml --system archlens \
+            --out "$RUNNER_TEMP/out" --image-base-url "$RAW"
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Collect images
+        if: steps.diff.outputs.code == '0' || steps.diff.outputs.code == '1'
+        run: |
+          mkdir -p "$RUNNER_TEMP/images"
+          cp "$RUNNER_TEMP"/out/*.svg "$RUNNER_TEMP/images/" 2>/dev/null || true
+      - name: Publish images
+        if: (steps.diff.outputs.code == '0' || steps.diff.outputs.code == '1') && env.SAME_REPO == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ github.token }}
+          publish_branch: archlens-artifacts
+          publish_dir: ${{ runner.temp }}/images
+          destination_dir: pr-${{ github.event.pull_request.number }}/${{ github.event.pull_request.head.sha }}
+          keep_files: true
+      - name: Sticky comment
+        if: (steps.diff.outputs.code == '0' || steps.diff.outputs.code == '1') && env.SAME_REPO == 'true'
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: archlens
+          path: ${{ runner.temp }}/out/comment.md
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: archlens-out
+          path: ${{ runner.temp }}/out
+          if-no-files-found: ignore
+      - name: Check status (fails on drift or unusable input)
+        run: |
+          case "${{ steps.diff.outputs.code }}" in
+            0) echo "ArchLens: no drift" ;;
+            1) echo "::error::ArchLens rule R1: docker-compose.yml and the model disagree (see the PR comment)"; exit 1 ;;
+            *) echo "::error::ArchLens could not read its inputs (exit ${{ steps.diff.outputs.code }})"; exit 1 ;;
+          esac
