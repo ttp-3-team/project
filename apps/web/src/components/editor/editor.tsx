@@ -1,7 +1,8 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useBlocker, useNavigate } from '@tanstack/react-router'
 import { Download, LoaderCircle, Workflow } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { toast } from 'sonner'
+import { HistorySheet } from './history-sheet'
 import { Inspector } from './inspector'
 import { SaveVersionDialog } from './save-version-dialog'
 import { useCoreViews } from './use-core-views'
@@ -52,6 +53,14 @@ export function Editor(props: EditorProps) {
   const [layingOut, setLayingOut] = useState(false)
   const dirty = differs(props.snapshot, snapshot)
   const navigate = useNavigate()
+
+  useBlocker({
+    shouldBlockFn: ({ current, next }) =>
+      dirty &&
+      next.pathname !== current.pathname &&
+      !window.confirm('You have unsaved changes. Leave the page and lose them?'),
+    enableBeforeUnload: () => dirty,
+  })
 
   const { views, problems, pending } = useCoreViews(
     `${props.model.id}:${props.version?.id ?? 'new'}`,
@@ -110,6 +119,7 @@ export function Editor(props: EditorProps) {
           >
             <Workflow /> Auto layout
           </Button>
+          <HistorySheet modelId={props.model.id} currentVersionId={props.version?.id ?? null} />
           <Button
             size="sm"
             variant="ghost"
