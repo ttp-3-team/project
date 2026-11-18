@@ -2,10 +2,13 @@ import { useBlocker, useNavigate } from '@tanstack/react-router'
 import { Download, LoaderCircle, Workflow } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { toast } from 'sonner'
+import { ComposeImportDialog } from './compose-import-dialog'
+import { DraftReview } from './draft-review'
 import { HistorySheet } from './history-sheet'
 import { Inspector } from './inspector'
 import { SaveVersionDialog } from './save-version-dialog'
 import { useCoreViews } from './use-core-views'
+import type { ComposeDraft } from './compose-import-dialog'
 import type { Selection } from './inspector'
 import type { EditorAction } from '#/model/editor'
 import type { ModelInfo, ModelVersion, Snapshot, ViewKind } from '#/model/types'
@@ -49,6 +52,7 @@ export function Editor(props: EditorProps) {
   const [state, dispatch] = useReducer(reduce, { snapshot: props.snapshot, revision: 0 })
   const { snapshot } = state
   const [selection, setSelection] = useState<Selection>(null)
+  const [review, setReview] = useState<ComposeDraft | null>(null)
   const [fitBump, setFitBump] = useState(0)
   const [layingOut, setLayingOut] = useState(false)
   const dirty = differs(props.snapshot, snapshot)
@@ -76,6 +80,20 @@ export function Editor(props: EditorProps) {
   const openView = (key: string) => {
     setSelection(null)
     void navigate({ to: '/m/$modelId', params: { modelId: props.model.id }, search: { view: key } })
+  }
+
+  if (review) {
+    return (
+      <DraftReview
+        model={props.model}
+        version={props.version}
+        base={props.snapshot}
+        draft={review}
+        viewKey={props.viewKey}
+        onViewChange={openView}
+        onDiscard={() => setReview(null)}
+      />
+    )
   }
 
   const saveBlocked = !dirty ? 'no changes' : problems.length > 0 ? 'the model has problems' : null
@@ -119,6 +137,14 @@ export function Editor(props: EditorProps) {
           >
             <Workflow /> Auto layout
           </Button>
+          <ComposeImportDialog
+            modelId={props.model.id}
+            baseVersionId={props.version?.id ?? null}
+            snapshot={props.snapshot}
+            preferredSystemId={view?.view.kind === 'container' ? view.view.scopeId : null}
+            blockedReason={!props.version ? 'save a version first' : dirty ? 'save your changes first' : null}
+            onDraft={setReview}
+          />
           <HistorySheet
             modelId={props.model.id}
             currentVersionId={props.version?.id ?? null}
