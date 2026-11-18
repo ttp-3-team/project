@@ -117,6 +117,16 @@
       "tags": [],
       "parentId": "core",
       "external": false
+    },
+    {
+      "id": "cli",
+      "kind": "container",
+      "name": "PR Check CLI",
+      "description": "archlens diff: Markdown comment, stable SVGs, drift exit code.",
+      "technology": ".NET console",
+      "tags": [],
+      "parentId": "archlens",
+      "external": false
     }
   ],
   "relationships": [
@@ -189,6 +199,20 @@
       "targetId": "postgres",
       "description": "Reads and writes",
       "technology": "SQL"
+    },
+    {
+      "id": "r-reviewer-cli",
+      "sourceId": "reviewer",
+      "targetId": "cli",
+      "description": "Reads the PR comment of",
+      "technology": "GitHub Actions"
+    },
+    {
+      "id": "r-cli-github",
+      "sourceId": "cli",
+      "targetId": "github",
+      "description": "Posts the sticky comment to",
+      "technology": "GitHub API"
     }
   ],
   "layout": {
@@ -230,6 +254,14 @@
       "github": {
         "x": 360,
         "y": 340
+      },
+      "cli": {
+        "x": 360,
+        "y": 560
+      },
+      "reviewer": {
+        "x": 0,
+        "y": 560
       }
     },
     "component:core": {
