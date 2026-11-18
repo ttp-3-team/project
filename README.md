@@ -27,14 +27,15 @@ it and fails on `git diff`.
 
 | Path | What |
 |---|---|
-| `services/ArchLens.Domain` | Pure library: model, validation, views, semantic diff, compare graph, compose draft, drift R1 |
+| `services/ArchLens.Domain` | Pure library: model, validation, views, semantic diff, compare graph, compose draft, drift R1, SVG + PR comment |
 | `services/ArchLens.Core` | ASP.NET Core minimal API over Domain: workspaces, models, immutable versions (Postgres), diff, views, compare, drafts |
+| `services/ArchLens.Cli` | `archlens diff` for PR checks: Markdown comment, SVG per affected view, exit code on drift |
 | `apps/web` | TanStack Start app: UI (React Flow canvas, ELK in a web worker) and the **BFF**; Better Auth (dev login / GitHub) |
 | `packages/contracts` | Generated contract artifacts (see above) |
 | `tools/ArchLens.SchemaExport` | Writes `model.schema.json` from the Domain types |
-| `tests/` | xUnit: Domain unit tests, Core integration tests (Testcontainers Postgres) |
+| `tests/` | xUnit: Domain unit tests, CLI tests, Core integration tests (Testcontainers Postgres) |
 | `reference-models/shopflow` | ShopFlow base/head snapshots (with a hand-tuned layout) and compose files; the hand-checked expected diff is a Verify snapshot in `tests/ArchLens.Domain.Tests` |
-| `architecture/archlens.model.json` | ArchLens's own architecture as an ArchLens model |
+| `architecture/archlens.model.json` | ArchLens's own architecture as an ArchLens model (the PR check diffs it) |
 
 The browser talks only to the web app. The web server calls Core server-side with a short-lived HS256 JWT it mints
 per request (`iss=archlens-web`, `aud=archlens-core`, `sub` = user id, 5 min). Core authenticates every request
@@ -91,11 +92,11 @@ Never commit `.env` or `.env.local`.
 ## Tests and reports
 
 Snapshot tests use [Verify](https://github.com/VerifyTests/Verify): the expected outputs (the ShopFlow diff, the compare
-graph, the served OpenAPI document) are committed `*.verified.*` files next to the tests. A changed
+graph, the PR SVG and comment, the served OpenAPI document) are committed `*.verified.*` files next to the tests. A changed
 output fails the test and writes a `*.received.*` file; review it and rename it to `.verified.` to accept the change.
 
 ```bash
-dotnet test ArchLens.slnx          # Domain unit + Core integration (needs Docker)
+dotnet test ArchLens.slnx          # Domain unit + CLI + Core integration (needs Docker)
 pnpm -C apps/web test             # Vitest: editor command reducer, canvas graph helpers
 pnpm test:report                  # writes artifacts/test-results/: results_*.trx, results_*.html, web-junit.xml
 ```
@@ -123,6 +124,23 @@ pnpm test:report                  # writes artifacts/test-results/: results_*.tr
    with the same content.
 9. API docs at http://localhost:5080/docs.
 
+## PR check (CLI + GitHub Action)
+
+```bash
+git show origin/main:architecture/archlens.model.json > /tmp/base.json
+dotnet run --project services/ArchLens.Cli -- diff \
+  --base /tmp/base.json --head architecture/archlens.model.json \
+  --compose docker-compose.yml --system archlens --out out/
+```
+
+Writes `out/comment.md`, one SVG per affected view (drawn from Core's compare graph: stable layout, same colours as
+the web compare view, byte-identical across runs; edges are straight lines, while the web canvas draws orthogonal
+floating edges) and `out/delta.json`. Exit code **1** means drift (rule R1),
+**2** means unusable input (unknown option, missing value or file, invalid model, `--system` that is not a software
+system). `.github/workflows/archlens-pr.yml` runs it on pull requests that touch `architecture/**` or
+`docker-compose.yml`, publishes the SVGs to the `archlens-artifacts` branch, keeps one sticky comment and fails the
+check on drift. Pull requests from forks skip publishing and commenting. In a **private** repository the raw image
+URLs do not render in comments; the SVGs are also attached to the workflow run.
 
 ## Decisions worth knowing
 
