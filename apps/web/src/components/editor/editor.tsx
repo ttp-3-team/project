@@ -1,9 +1,11 @@
+import { useNavigate } from '@tanstack/react-router'
 import { LoaderCircle } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useCoreViews } from './use-core-views'
 import type { ModelInfo, ModelVersion, Snapshot, ViewKind } from '#/model/types'
 import { ModelCanvas } from '#/components/canvas/model-canvas'
 import { LoadingState, StateBlock } from '#/components/states'
+import { Breadcrumbs } from '#/components/views/breadcrumbs'
 import { usePlacedPositions } from '#/components/views/use-placed-positions'
 import { errorMessage } from '#/lib/core-result'
 import { fromViewGraph } from '#/model/flow'
@@ -25,6 +27,7 @@ type EditorProps = {
 export function Editor(props: EditorProps) {
   const snapshot = props.snapshot
   const [selection, setSelection] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   const { views, pending } = useCoreViews(`${props.model.id}:${props.version?.id ?? 'new'}`, snapshot, 0)
   const viewKey = props.viewKey ?? 'context'
@@ -33,11 +36,21 @@ export function Editor(props: EditorProps) {
   const local = view ? snapshot.layout[view.view.key] : undefined
   const placed = usePlacedPositions(graph, local)
 
+  const openView = (key: string) => {
+    setSelection(null)
+    void navigate({ to: '/m/$modelId', params: { modelId: props.model.id }, search: { view: key } })
+  }
+
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-11 shrink-0 items-center gap-3 border-b px-4 text-sm">
         <span className="font-medium">{props.model.name}</span>
         <span className="text-muted-foreground">{props.version ? `v${props.version.number}` : 'no versions'}</span>
+        {view && (
+          <div className="ml-4">
+            <Breadcrumbs view={view.view} onOpen={openView} />
+          </div>
+        )}
         {pending && (
           <LoaderCircle className="size-3.5 animate-spin text-muted-foreground" aria-label="Updating views" />
         )}
@@ -57,6 +70,7 @@ export function Editor(props: EditorProps) {
               selectedId={selection}
               readOnly
               onSelect={(s) => setSelection(s?.id ?? null)}
+              onOpen={openView}
             />
           )}
           {graph && !placed.positions && graph.nodes.length > 0 && <LoadingState title="Laying out elements…" />}
