@@ -1,0 +1,10 @@
+**/node_modules
+**/bin
+**/obj
+**/.output
+**/.nitro
+**/.tanstack
+**/.env.local
+artifacts
+.git
+.pnpm-store
