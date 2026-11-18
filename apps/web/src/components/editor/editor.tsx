@@ -1,13 +1,17 @@
 import { useNavigate } from '@tanstack/react-router'
 import { LoaderCircle } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useReducer, useState } from 'react'
+import { Inspector } from './inspector'
 import { useCoreViews } from './use-core-views'
 import type { ModelInfo, ModelVersion, Snapshot, ViewKind } from '#/model/types'
+import type { Selection } from './inspector'
+import type { EditorAction } from '#/model/editor'
 import { ModelCanvas } from '#/components/canvas/model-canvas'
 import { LoadingState, StateBlock } from '#/components/states'
 import { Breadcrumbs } from '#/components/views/breadcrumbs'
 import { usePlacedPositions } from '#/components/views/use-placed-positions'
 import { errorMessage } from '#/lib/core-result'
+import { apply, changesModel, differs } from '#/model/editor'
 import { fromViewGraph } from '#/model/flow'
 
 const EMPTY: Readonly<Record<ViewKind, readonly [string, string]>> = {
@@ -23,13 +27,30 @@ type EditorProps = {
   readonly viewKey: string | undefined
 }
 
-/** Model editor: draws the current C4 view exactly as Core derived it. */
+type State = { readonly snapshot: Snapshot; readonly revision: number }
+
+function reduce(state: State, action: EditorAction): State {
+  const snapshot = apply(state.snapshot, action)
+  if (snapshot === state.snapshot) return state
+  return { snapshot, revision: changesModel(action) ? state.revision + 1 : state.revision }
+}
+
+/**
+ * Model editor. The reducer holds edit commands only; what to draw (views, breadcrumbs, levels) and the model's
+ * problems come from Core.
+ */
 export function Editor(props: EditorProps) {
-  const snapshot = props.snapshot
-  const [selection, setSelection] = useState<string | null>(null)
+  const [state, dispatch] = useReducer(reduce, { snapshot: props.snapshot, revision: 0 })
+  const { snapshot } = state
+  const [selection, setSelection] = useState<Selection>(null)
+  const dirty = differs(props.snapshot, snapshot)
   const navigate = useNavigate()
 
-  const { views, pending } = useCoreViews(`${props.model.id}:${props.version?.id ?? 'new'}`, snapshot, 0)
+  const { views, problems, pending } = useCoreViews(
+    `${props.model.id}:${props.version?.id ?? 'new'}`,
+    snapshot,
+    state.revision,
+  )
   const viewKey = props.viewKey ?? 'context'
   const view = views.data?.find((v) => v.view.key === viewKey) ?? views.data?.find((v) => v.view.key === 'context')
   const graph = useMemo(() => (view ? fromViewGraph(view) : null), [view])
@@ -46,6 +67,7 @@ export function Editor(props: EditorProps) {
       <div className="flex h-11 shrink-0 items-center gap-3 border-b px-4 text-sm">
         <span className="font-medium">{props.model.name}</span>
         <span className="text-muted-foreground">{props.version ? `v${props.version.number}` : 'no versions'}</span>
+        {dirty && <span className="rounded bg-modified/20 px-1.5 py-0.5 text-xs text-modified">unsaved changes</span>}
         {view && (
           <div className="ml-4">
             <Breadcrumbs view={view.view} onOpen={openView} />
@@ -67,10 +89,22 @@ export function Editor(props: EditorProps) {
               graph={graph}
               positions={placed.positions}
               fitKey={`${graph.view.key}:${placed.placedByClient ? 'client' : 'stored'}`}
-              selectedId={selection}
-              readOnly
-              onSelect={(s) => setSelection(s?.id ?? null)}
+              selectedId={selection?.id ?? null}
+              onSelect={setSelection}
               onOpen={openView}
+              onConnect={(sourceId, targetId) =>
+                dispatch({
+                  type: 'addRelationship',
+                  id: crypto.randomUUID(),
+                  sourceId,
+                  targetId,
+                  description: 'Uses',
+                })
+              }
+              onDeleteElements={(ids) => {
+                for (const id of ids) dispatch({ type: 'deleteElement', id })
+                setSelection(null)
+              }}
             />
           )}
           {graph && !placed.positions && graph.nodes.length > 0 && <LoadingState title="Laying out elements…" />}
@@ -81,6 +115,17 @@ export function Editor(props: EditorProps) {
           )}
           {!graph && !views.isError && <LoadingState title="Loading views…" />}
         </div>
+        {view && (
+          <Inspector
+            snapshot={snapshot}
+            view={view}
+            selection={selection}
+            problems={problems}
+            dispatch={dispatch}
+            onOpen={openView}
+            onSelect={setSelection}
+          />
+        )}
       </div>
     </div>
   )
