@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\services\ArchLens.Cli\ArchLens.Cli.csproj" />
+  </ItemGroup>
+
+</Project>
